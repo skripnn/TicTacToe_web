@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{#{% block title %}{% endblock %}#}
+
+{% block content %}
+    <table border="1">
+    {% for row in cells %}
+        <tr>
+        {% for column in row %}
+            {% load static %}
+            {% if column == "X" %}
+                <td><img src="{% static "x.png" %}"/></td>
+            {% elif column == "O" %}
+                <td><img src="{% static "o.png" %}"/></td>
+            {% else %}
+                <td><img src="{% static "none.png" %}"/></td>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </table>
+    <p>{{ state }}</p>
+{% endblock %}

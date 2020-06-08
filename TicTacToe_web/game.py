@@ -1,9 +1,11 @@
+from copy import deepcopy
+
 from TicTacToe_web import players
 
 
 class TicTacToe:
 
-    def __init__(self, player_x, player_o, size=3):
+    def __init__(self, player_x, player_o, size=3, first_step=None):
         self.size = size
         self.field = self.make_field()
         self.wins = players.make_wins(size)
@@ -17,8 +19,14 @@ class TicTacToe:
         self.player_x = player_x
         self.player_o = player_o
 
-        # self.first_step('O_XX_X_OO')
-        self.algorithm()
+        if first_step is not None:
+            if len(first_step) == size ** 2:
+                self.first_step(first_step)
+            else:
+                print("First step can't exist")
+                self.algorithm()
+        else:
+            self.algorithm()
 
     def make_field(self):
         field = []
@@ -38,15 +46,19 @@ class TicTacToe:
         self.add_to_cells()
         self.print_cells()
         self.check_state()
-        if self.state == 'Game not finished':
+        if self.state == 'game not finished':
             self.change_player()
             self.count_steps += 1
             self.step()
         else:
             print(self.state)
-            all_counts = self.player_x.counts + self.player_o.counts
-            print(f'all counts = {all_counts}')
+            try:
+                all_counts = self.player_x.counts + self.player_o.counts
+                print(f'all counts = {all_counts}')
+            except AttributeError:
+                print('Counts available only for HARD/HARD game')
             print('')
+
 
     def step(self):
         print(f'player {self.player} step:')
@@ -54,7 +66,6 @@ class TicTacToe:
             x, y = self.player_x.step(self.field, self.player)
         else:  # if self.player == 'O':
             x, y = self.player_o.step(self.field, self.player)
-
         self.field[x][y] = self.player
         self.algorithm()
 
@@ -92,7 +103,8 @@ class TicTacToe:
             win_letters = win_string.replace(' ', '')
             win_set = set(win_letters)
             if len(win_letters) == self.size and len(win_set) == 1:
-                self.winners.append(str(win_set))
+                winner = ''.join(win_set)
+                self.winners.append(winner)
 
     def check_state(self):
         self.check_win_rows()
@@ -104,7 +116,7 @@ class TicTacToe:
         elif len(all_o) - len(all_x) > 1:
             self.state = 'Impossible'
         elif len(self.winners) == 0 and ' ' in all_cells:
-            self.state = 'Game not finished'
+            self.state = 'game not finished'
         elif len(self.winners) == 0 and ' ' not in all_cells:
             self.state = 'Draw'
         else:
@@ -131,7 +143,24 @@ class Menu:
                 players.append(self.player_choose(arg, size))
                 if players[-1] is None:
                     return self.bad_parameters()
-            return TicTacToe(*players, size)
+            game = TicTacToe(*players, size)
+            # new_field = []
+            # for n, row in enumerate(game.field):
+            #     new_field.append([])
+            #     for column in row:
+            #         if column == 'X':
+            #             column = 'images/x.png'
+            #         elif column == 'O':
+            #             column = 'images/o.png'
+            #         else:
+            #             column = 'images/none.png'
+            #         new_field[n].append(column)
+            # print(new_field)
+            return {
+                'state': game.state,
+                'cells': game.field
+            }
+
         if command == 'exit':
             exit()
         else:
@@ -153,4 +182,4 @@ class Menu:
         return None
 
 
-Menu().input('start', ['hard', 'hard'], 5)
+# Menu().input('start', ['medium', 'easy'], 3)

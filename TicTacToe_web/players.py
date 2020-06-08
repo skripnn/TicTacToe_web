@@ -38,7 +38,13 @@ class Mirrors:
             field2.append(row)
 
         if field1 == field2:
-            return True
+            field_new = deepcopy(field)
+            for x in range(self.size):
+                for y in range(self.size):
+                    if x > half:
+                        field_new[x][y] = '?'
+            return field_new
+        return field
 
     def vertical(self, field):
         half = self.size // 2
@@ -51,7 +57,13 @@ class Mirrors:
             field2.append(row)
 
         if field1 == field2:
-            return True
+            field_new = deepcopy(field)
+            for x in range(self.size):
+                for y in range(self.size):
+                    if y > half:
+                        field_new[x][y] = '?'
+            return field_new
+        return field
 
     def quarter(self, field):
         half = self.size // 2
@@ -212,8 +224,10 @@ class Hard(Mirrors, Medium):
         x, y = self.hard_step(field, side)
         return x, y
 
-# TODO Доделать Mirrors - горизонталь и вертикаль
     def check_mirrors(self, field):
+        if self.size % 2 != 0:
+            steps = self.dict_steps(field)
+            return steps, 'full'
         new_field = field
         part = 'full'
         if new_field == field:
@@ -225,7 +239,12 @@ class Hard(Mirrors, Medium):
         if new_field == field:
             new_field = self.side_diagonal(field)
             part = 'side_diagonal'
-
+        if new_field == field:
+            new_field = self.horizontal(field)
+            part = 'horizontal'
+        if new_field == field:
+            new_field = self.vertical(field)
+            part = 'vertical'
         if new_field == field:
             part = 'full'
         steps = self.dict_steps(new_field)
@@ -237,31 +256,37 @@ class Hard(Mirrors, Medium):
 
         half = self.size // 2
         full_steps = []
+        s = self.size - 1
         for step in steps:
             full_steps.append(step)
             x, y = int(step[0]), int(step[1])
             if part == 'quarter':
                 if x != half or y != half:
-                    s = self.size - 1
                     full_steps.append([x, s - y])
                     full_steps.append([s - x, y])
                     full_steps.append([s - x, s - y])
             elif part == 'main_diagonal':
-                if x != self.size - y:
-                    full_steps.append([self.size - x, self.size - y])
+                if x != s - y:
+                    full_steps.append([s - x, s - y])
             elif part == 'side_diagonal':
                 if x != y:
                     full_steps.append([y, x])
+            elif part == 'horizontal':
+                if x != half:
+                    full_steps.append([s - x, s - y])
+            elif part == 'vertical':
+                if y != half:
+                    full_steps.append([s - x, s - y])
 
         return full_steps
 
     def hard_step(self, field, side):  # minimax step
         # delete mirror steps
-        steps, part = self.check_mirrors(field)
+        # # steps, part = self.check_mirrors(field)
+        steps = self.dict_steps(field)
 
         # score counting for each available step
         for xy, score in steps.items():
-            # # result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side, score)
             result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side)
             steps[xy] = result_score
 
@@ -269,7 +294,7 @@ class Hard(Mirrors, Medium):
         # create the list with all maximum-score steps
         result_list = [xy for xy, score in steps.items() if score == maximum]
         # return mirror steps
-        result_list = self.mirror_back(result_list, part)
+        # # result_list = self.mirror_back(result_list, part)
         # choose a random step from list
         xy = random.choice(result_list)
         x, y = int(xy[0]), int(xy[1])
@@ -310,8 +335,6 @@ class Hard(Mirrors, Medium):
         # start of recursion
         level += 1
         for xy, score in steps.items():
-            # # new_score = score + result * k
-            # # result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side, new_score, level)
             result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side, level)
             steps[xy] += result_score
         level -= 1
