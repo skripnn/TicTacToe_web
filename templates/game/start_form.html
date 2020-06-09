@@ -6,7 +6,7 @@
         <fieldset>
             <legend>Game parameters</legend>
             <p><label for="size">Size</label><input type="number" min="3" max="5" value="3" name="size" ></p>
-            <p><label for="field">Field</label><input type="text" name="field"></p>
+{#            <p><label for="field">Field</label><input type="text" name="field"></p>#}
             <p><label for="player_x">Player X</label>
                 <select name="player_x">
                     {% include 'game/player_choose_menu.html' %}
@@ -17,7 +17,7 @@
                     {% include 'game/player_choose_menu.html' %}
                 </select>
             </p>
+            <button type="submit">Start</button>
         </fieldset>
-    <button type="submit">Start</button>
     </form>
 {% endblock %}

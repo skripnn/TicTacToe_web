@@ -1,27 +1,7 @@
 import random
 from copy import deepcopy
-# TODO Научить Hard записывать в базу каждый счёт каждого просчитаного шага и читать их потом из базы, а не считать
-
-def make_wins(size):  # create list with win combinations
-    wins_xy = []
-    for x in range(size):
-        wins_xy.append([])
-        for y in range(size):
-            wins_xy[x].append([x, y])
-
-    wins_yx = []
-    for y in range(size):
-        wins_yx.append([])
-        for x in range(size):
-            wins_yx[y].append([x, y])
-
-    wins_d = [[], []]
-    for x, y in enumerate(reversed(range(size))):
-        wins_d[0].append([x, x])
-        wins_d[1].append([x, y])
-
-    wins = wins_xy + wins_yx + wins_d
-    return wins
+from .models import Steps
+from .functions import make_wins, field_list_to_str
 
 
 class Mirrors:
@@ -292,18 +272,42 @@ class Hard(Mirrors, Medium):
     def hard_step(self, field, side):  # minimax step
         # delete mirror steps
         # # steps, part = self.check_mirrors(field)
-        steps = self.dict_steps(field)
 
-        # score counting for each available step
-        for xy, score in steps.items():
-            result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side)
-            steps[xy] = result_score
+        # trying to get steps from database (table Steps)
+        try:
+            print('Try to get steps from db')
+            db_steps = Steps.objects.get(
+                field=field_list_to_str(field, self.size),
+            )
+            result_list = db_steps.steps.split()
+            print('Getting steps is okay')
+            print(f'steps = {result_list}')
 
-        maximum = max(steps.values())  # find maximum score
-        # create the list with all maximum-score steps
-        result_list = [xy for xy, score in steps.items() if score == maximum]
-        # return mirror steps
-        # # result_list = self.mirror_back(result_list, part)
+        # if the row doesn't exist
+        except Steps.DoesNotExist:
+            steps = self.dict_steps(field)
+
+            # score counting for each available step
+            for xy, score in steps.items():
+                result_score, level = self.minimax(field, int(xy[0]), int(xy[1]), side)
+                steps[xy] = result_score
+
+            maximum = max(steps.values())  # find maximum score
+            # create the list with all maximum-score steps
+            result_list = [xy for xy, score in steps.items() if score == maximum]
+
+            # return mirror steps
+            # # result_list = self.mirror_back(result_list, part)
+
+            # create a row in database (table Steps)
+            Steps.objects.create(
+                size=self.size,
+                field=field_list_to_str(field, self.size),
+                score=maximum,
+                steps=' '.join(result_list)
+            )
+            print('Steps was created')
+
         # choose a random step from list
         xy = random.choice(result_list)
         x, y = int(xy[0]), int(xy[1])

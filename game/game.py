@@ -74,6 +74,7 @@ class TicTacToe:
         self.add_to_cells()
         self.print_cells()
         self.check_state()
+        self.change_player()
         # self.algorithm()
 
     def change_player(self):
@@ -132,6 +133,19 @@ class TicTacToe:
             elif self.winners[0] == 'O':
                 self.state = 'O wins'
 
+        if any((
+                self.state == 'Draw',
+                self.state == 'X',
+                self.state == 'O'
+        )):
+            print(self.state)
+            try:
+                all_counts = self.player_x.counts + self.player_o.counts
+                print(f'all counts = {all_counts}')
+            except AttributeError:
+                print('Counts available only for HARD/HARD game')
+            print('')
+
 
 class Menu:
 
@@ -157,6 +171,7 @@ class Menu:
                 'field': game.field,
                 'player_x': game.player_x,
                 'player_o': game.player_o,
+                'player': game.player
             }
 
         if command == 'exit':
@@ -178,6 +193,5 @@ class Menu:
     def bad_parameters(self):
         print('Bad parameters!')
         return None
-
 
 # Menu().input('start', ['medium', 'easy'], 3)

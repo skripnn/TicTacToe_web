@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{#{% block title %}{% endblock %}#}
+
+{% block content %}
+    <table border="1">
+    {% for row in cells %}
+        <tr>
+        {% for column in row %}
+            {% load static %}
+            {% if column == "X" %}
+                <td>
+                    <button>
+                        <img src="{% static "x.png" %}" width="100" alt="X"/>
+                    </button>
+                </td>
+            {% elif column == "O" %}
+                <td>
+                    <button>
+                        <img src="{% static "o.png" %}" width="100" alt="O"/>
+                    </button>
+                </td>
+            {% else %}
+                <td>
+                    <button>
+                        <img src="{% static "none.png" %}" width="100" alt=" "/>
+                    </button>
+                </td>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </table>
+    <p>{{ state }}</p>
+    {% if state == "game not finished" %}
+        <form method="post">{% csrf_token %}
+            <button type="submit" name="step" value=None>Next step</button>
+{#                <script type="text/javascript">#}
+{#                    {% include "game/next_step.js" %}#}
+{#                </script>#}
+        </form>
+    {% endif %}
+{% endblock %}
