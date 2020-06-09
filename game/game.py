@@ -1,11 +1,9 @@
-from copy import deepcopy
-
-from TicTacToe_web import players
+from game import players
 
 
 class TicTacToe:
 
-    def __init__(self, player_x, player_o, size=3, first_step=None):
+    def __init__(self, player_x, player_o, size=3, first_step=None, next_step=None):
         self.size = size
         self.field = self.make_field()
         self.wins = players.make_wins(size)
@@ -19,13 +17,20 @@ class TicTacToe:
         self.player_x = player_x
         self.player_o = player_o
 
+        self.next_step = next_step
+
         if first_step is not None:
             if len(first_step) == size ** 2:
                 self.first_step(first_step)
             else:
                 print("First step can't exist")
+                self.add_to_cells()
+                self.print_cells()
                 self.algorithm()
+
         else:
+            self.add_to_cells()
+            self.print_cells()
             self.algorithm()
 
     def make_field(self):
@@ -40,15 +45,13 @@ class TicTacToe:
                 step = steps[y + x * self.size]
                 if step == 'X' or step == 'O':
                     self.field[x][y] = step
+        self.add_to_cells()
+        self.print_cells()
         self.algorithm()
 
     def algorithm(self):
-        self.add_to_cells()
-        self.print_cells()
         self.check_state()
         if self.state == 'game not finished':
-            self.change_player()
-            self.count_steps += 1
             self.step()
         else:
             print(self.state)
@@ -59,15 +62,19 @@ class TicTacToe:
                 print('Counts available only for HARD/HARD game')
             print('')
 
-
     def step(self):
+        self.count_steps += 1
+        self.change_player()
         print(f'player {self.player} step:')
         if self.player == 'X':
-            x, y = self.player_x.step(self.field, self.player)
+            x, y = self.player_x.step(self.field, self.player, self.next_step)
         else:  # if self.player == 'O':
-            x, y = self.player_o.step(self.field, self.player)
+            x, y = self.player_o.step(self.field, self.player, self.next_step)
         self.field[x][y] = self.player
-        self.algorithm()
+        self.add_to_cells()
+        self.print_cells()
+        self.check_state()
+        # self.algorithm()
 
     def change_player(self):
         all_cells = [m for n in self.field for m in n]
@@ -134,7 +141,7 @@ class Menu:
     #     command = line.pop(0)
     #     self.input(command, line)
 
-    def input(self, command, args, size=3):
+    def input(self, command, args, size=3, field=None, step=None):
         if command == 'start':
             if len(args) != 2:
                 return self.bad_parameters()
@@ -143,22 +150,13 @@ class Menu:
                 players.append(self.player_choose(arg, size))
                 if players[-1] is None:
                     return self.bad_parameters()
-            game = TicTacToe(*players, size)
-            # new_field = []
-            # for n, row in enumerate(game.field):
-            #     new_field.append([])
-            #     for column in row:
-            #         if column == 'X':
-            #             column = 'images/x.png'
-            #         elif column == 'O':
-            #             column = 'images/o.png'
-            #         else:
-            #             column = 'images/none.png'
-            #         new_field[n].append(column)
-            # print(new_field)
+            game = TicTacToe(*players, size, field, step)
             return {
+                'size': game.size,
                 'state': game.state,
-                'cells': game.field
+                'field': game.field,
+                'player_x': game.player_x,
+                'player_o': game.player_o,
             }
 
         if command == 'exit':

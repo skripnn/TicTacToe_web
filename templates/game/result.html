@@ -4,18 +4,43 @@
 {% block content %}
     <table border="1">
     {% for row in cells %}
-        <tr>
+        <tr >
         {% for column in row %}
             {% load static %}
             {% if column == "X" %}
-                <td><img src="{% static "x.png" %}"/></td>
+                <td>
+                    <button>
+                        <img src="{% static "x.png" %}" width="100"/>
+                    </button>
+                </td>
             {% elif column == "O" %}
-                <td><img src="{% static "o.png" %}"/></td>
+                <td>
+                    <button>
+                        <img src="{% static "o.png" %}" width="100"/>
+                    </button>
+                </td>
             {% else %}
-                <td><img src="{% static "none.png" %}"/></td>
+                {% if state == 'game not finished' %}
+                    <td>
+                        <form method="post">{% csrf_token %}
+                            <button type="submit" name="step" value="{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                <img src="{% static "none.png" %}" width="100"/>
+                            </button>
+                        </form>
+                    </td>
+                {% else %}
+                    <td>
+                        <button>
+                            <img src="{% static "none.png" %}" width="100"/>
+                        </button>
+                    </td>
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% endfor %}
     </table>
     <p>{{ state }}</p>
+    <form method="post">{% csrf_token %}
+    <button type="submit">Next</button>
+    </form>
 {% endblock %}

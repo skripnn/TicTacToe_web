@@ -133,6 +133,9 @@ class Easy:
         self.wins = make_wins(size)
         self.size = len(self.wins[0])
 
+    def __str__(self):
+        return 'easy'
+
     def find_steps(self, field):  # return the list with all available steps
         steps = []
         for x in range(self.size):
@@ -141,7 +144,7 @@ class Easy:
                     steps.append([x, y])
         return steps
 
-    def step(self, field, side):
+    def step(self, field, side, none):
         print('Making move level "easy"')
         x, y = self.easy_step(field)
         return x, y
@@ -155,7 +158,10 @@ class Easy:
 
 class Medium(Easy):
 
-    def step(self, field, side):
+    def __str__(self):
+        return 'medium'
+
+    def step(self, field, side, none):
         print('Making move level "medium"')
         step = self.medium_step(field, side)
         if step is None:
@@ -190,7 +196,10 @@ class Hard(Mirrors, Medium):
         self.counts += counts
         print(f'side = {side}\ncount = {self.count}\ncounts = {self.counts}')
 
-    def step(self, field, side):
+    def __str__(self):
+        return 'hard'
+
+    def step(self, field, side, none):
         self.count = 0
         print('Making move level "hard"')
         steps = self.find_steps(field)
@@ -355,10 +364,16 @@ class Hard(Mirrors, Medium):
 
 
 class Human:
-    def step(self, field, side):
-        coordinates = input('Enter the coordinates: ')
-        size = len(field[0])
-        x, y = self.make_xy_from_step(coordinates, size)
+
+    def __str__(self):
+        return 'user'
+
+    def step(self, field, side, step):
+        # coordinates = input('Enter the coordinates: ')
+        # size = len(field[0])
+        # x, y = self.make_xy_from_step(coordinates, size)
+        x = int(step[0])
+        y = int(step[1])
         return x, y
 
     def make_xy_from_step(self, step, size):
