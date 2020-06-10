@@ -55,13 +55,6 @@ class GameContinue(View):
             'player': my_game.player
         }
 
-        if any((
-                my_game.state == 'Draw',
-                my_game.state == 'X',
-                my_game.state == 'O'
-        )):
-            my_game.delete()
-
         if user_step:
             return render(request, 'game/field_user.html', context=context)
         return render(request, 'game/field_ai.html', context=context)
@@ -96,16 +89,3 @@ class GameContinue(View):
         db_game.save()
 
         return self.get(request, game_id)
-
-
-class DB(View):
-    def get(self, request):
-        self.delete()
-        return redirect('../')
-
-    def delete(self):
-        games = models.Game.objects.all()
-        for i in games:
-            print(f'{i} is deleting')
-        games.delete()
-        print('Database is clear')
