@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block head %}
+    <style>
+        {% include 'game/field.css' %}
+        {% if red_line != '' %}{% include 'game/red_line.css' %}{% endif %}
+        {% if user_step %}{% include 'game/rollover_css.html' %}{% endif %}
+    </style>
+{% endblock %}
+{% block content %}
+    {% load static %}
+    <div class="field">
+        {% if red_line != '' %}{% include 'game/red_line.html' %}{% endif %}
+        <table border="1">
+        {% for row in field %}
+            <tr>
+            {% for column in row %}
+                {% if column == "X" %}
+                    <td><button><img src="{% static "x.png" %}" alt="X"/></button></td>
+                {% elif column == "O" %}
+                    <td><button><img src="{% static "o.png" %}" alt="O"/></button></td>
+                {% else %}
+                    {% if user_step and state == 'game not finished'%}
+                        <td>
+                            <form method="post">{% csrf_token %}
+                                <button type="submit" name="step" value="{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                    <img class=rollover src="{% static "none.png" %}" alt=" "/>
+                                </button>
+                            </form>
+                        </td>
+                    {% else %}
+                        <td><button><img src="{% static "none.png" %}" alt=" "/></button></td>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </table>
+    </div>
+    <p>{{ state }}</p>
+    {% if not user_step and state == "game not finished" %}
+        <script type="text/javascript">{% include "game/next_step.js" %}</script>
+    {% else %}
+        <a href="../">New game</a>
+    {% endif %}
+{% endblock %}

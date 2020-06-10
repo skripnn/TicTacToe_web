@@ -1,0 +1,10 @@
+{% load static %}
+img.rollover {
+    background: url({% static "none.png" %});
+    transition-duration: 0.3s
+}
+img.rollover:hover {
+    {% if player == 'X' %}background: url({% static "x.png" %});
+    {% else %}background: url({% static "o.png" %});
+    {% endif %}
+}

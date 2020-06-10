@@ -8,4 +8,4 @@ setTimeout(function(){
   xhr.send();
   xhr.onload = () => location.reload();
 
-  }, 1000);
+  }, 100);

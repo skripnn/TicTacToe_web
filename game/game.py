@@ -13,10 +13,11 @@ class TicTacToe:
         self.winners = []
         self.state = None
         self.count_steps = 0
-        self.player = 'X'
+        self.player = None
+        self.change_player()
 
-        self.player_x = player_x
-        self.player_o = player_o
+        self.player_x = self.player_choose(player_x, size)
+        self.player_o = self.player_choose(player_o, size)
 
         self.next_step = next_step
 
@@ -26,13 +27,36 @@ class TicTacToe:
             else:
                 print("First step can't exist")
                 self.add_to_cells()
-                self.print_cells()
+                # self.print_cells()
                 self.algorithm()
 
         else:
             self.add_to_cells()
-            self.print_cells()
+            # self.print_cells()
             self.algorithm()
+
+    def get_context(self):
+        return {
+            'size': self.size,
+            'state': self.state,
+            'field': self.field,
+            'player_x': self.player_x,
+            'player_o': self.player_o,
+            'player': self.player,
+            'counts': self.count_steps,
+            'red_line': self.red_line
+        }
+
+    def player_choose(self, player, size):
+        if player == 'user':
+            return players.Human()
+        if player == 'easy':
+            return players.Easy(size)
+        if player == 'medium':
+            return players.Medium(size)
+        if player == 'hard':
+            return players.Hard(size)
+        return None
 
     def make_field(self):
         field = []
@@ -47,7 +71,7 @@ class TicTacToe:
                 if step == 'X' or step == 'O':
                     self.field[x][y] = step
         self.add_to_cells()
-        self.print_cells()
+        # self.print_cells()
         self.algorithm()
 
     def algorithm(self):
@@ -56,24 +80,20 @@ class TicTacToe:
             self.step()
         else:
             print(self.state)
-            try:
-                all_counts = self.player_x.counts + self.player_o.counts
-                print(f'all counts = {all_counts}')
-            except AttributeError:
-                print('Counts available only for HARD/HARD game')
-            print('')
 
     def step(self):
         self.count_steps += 1
+        if str(self.player_x) == str(self.player_o) == 'hard':
+            self.count_steps = self.player_x.counts + self.player_o.counts
         self.change_player()
-        print(f'player {self.player} step:')
+        # print(f'player {self.player} step:')
         if self.player == 'X':
             x, y = self.player_x.step(self.field, self.player, self.next_step)
         else:  # if self.player == 'O':
             x, y = self.player_o.step(self.field, self.player, self.next_step)
         self.field[x][y] = self.player
         self.add_to_cells()
-        self.print_cells()
+        # self.print_cells()
         self.check_state()
         self.change_player()
         # self.algorithm()
@@ -153,7 +173,6 @@ class TicTacToe:
                 return False
         return True
 
-
     def check_state(self):
         self.check_win_rows()
         all_cells = [m for n in self.field for m in n]
@@ -177,65 +196,66 @@ class TicTacToe:
                 self.state == 'X',
                 self.state == 'O')):
             print(self.state)
-            try:
-                all_counts = self.player_x.counts + self.player_o.counts
-                print(f'all counts = {all_counts}')
-            except AttributeError:
-                print('Counts available only for HARD/HARD game')
-            print('')
+
+            # try:
+            #     all_counts = self.player_x.counts + self.player_o.counts
+            #     print(f'all counts = {all_counts}')
+            # except AttributeError:
+            #     print('Counts available only for HARD/HARD game')
+            # print('')
 
 
-class Menu:
-
-    # def __init__(self):
-    # while True:
-    #     line = input('Input command: ').split()
-    #     command = line.pop(0)
-    #     self.input(command, line)
-
-    def input(self, command, args, size=3, field=None, step=None):
-        if command == 'start':
-            if len(args) != 2:
-                return self.bad_parameters()
-            players = []
-            for arg in args:
-                players.append(self.player_choose(arg, size))
-                if players[-1] is None:
-                    return self.bad_parameters()
-            game = TicTacToe(*players, size, field, step)
-            if str(players[0]) == str(players[1]) == 'hard':
-                counts = game.player_x.counts + game.player_o.counts
-            else:
-                counts = 0
-            return {
-                'size': game.size,
-                'state': game.state,
-                'field': game.field,
-                'player_x': game.player_x,
-                'player_o': game.player_o,
-                'player': game.player,
-                'counts': counts,
-                'red_line': game.red_line
-            }
-
-        if command == 'exit':
-            exit()
-        else:
-            print('Wrong command!')
-
-    def player_choose(self, player, size):
-        if player == 'user':
-            return players.Human()
-        if player == 'easy':
-            return players.Easy(size)
-        if player == 'medium':
-            return players.Medium(size)
-        if player == 'hard':
-            return players.Hard(size)
-        return None
-
-    def bad_parameters(self):
-        print('Bad parameters!')
-        return None
-
-# Menu().input('start', ['medium', 'easy'], 3)
+# class Menu:
+#
+#     def __init__(self):
+#     while True:
+#         line = input('Input command: ').split()
+#         command = line.pop(0)
+#         self.input(command, line)
+#
+#     def input(self, command, args, size=3, field=None, step=None):
+#         if command == 'start':
+#             if len(args) != 2:
+#                 return self.bad_parameters()
+#             players = []
+#             for arg in args:
+#                 players.append(self.player_choose(arg, size))
+#                 if players[-1] is None:
+#                     return self.bad_parameters()
+#             game = TicTacToe(*players, size, field, step)
+#             if str(players[0]) == str(players[1]) == 'hard':
+#                 counts = game.player_x.counts + game.player_o.counts
+#             else:
+#                 counts = 0
+#             return {
+#                 'size': game.size,
+#                 'state': game.state,
+#                 'field': game.field,
+#                 'player_x': game.player_x,
+#                 'player_o': game.player_o,
+#                 'player': game.player,
+#                 'counts': counts,
+#                 'red_line': game.red_line
+#             }
+#
+#         if command == 'exit':
+#             exit()
+#         else:
+#             print('Wrong command!')
+#
+#     def player_choose(self, player, size):
+#         if player == 'user':
+#             return players.Human()
+#         if player == 'easy':
+#             return players.Easy(size)
+#         if player == 'medium':
+#             return players.Medium(size)
+#         if player == 'hard':
+#             return players.Hard(size)
+#         return None
+#
+#     def bad_parameters(self):
+#         print('Bad parameters!')
+#         return None
+#
+# # Menu().input('start', ['medium', 'easy'], 3)

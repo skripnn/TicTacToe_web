@@ -109,12 +109,21 @@ class Mirrors:
 
 
 class Easy:
+    count = 0
+    counts = 0
+
     def __init__(self, size=3):
         self.wins = make_wins(size)
         self.size = len(self.wins[0])
 
     def __str__(self):
         return 'easy'
+
+
+    def counter(self, side, count=1, counts=1):
+        self.count += count
+        self.counts += counts
+        # print(f'side = {side}\ncount = {self.count}\ncounts = {self.counts}')
 
     def find_steps(self, field):  # return the list with all available steps
         steps = []
@@ -124,9 +133,10 @@ class Easy:
                     steps.append([x, y])
         return steps
 
-    def step(self, field, side, none):
-        print('Making move level "easy"')
+    def step(self, field, side, *args):
+        # print('Making move level "easy"')
         x, y = self.easy_step(field)
+        self.counter(side)
         return x, y
 
     def easy_step(self, field):  # random step
@@ -141,11 +151,12 @@ class Medium(Easy):
     def __str__(self):
         return 'medium'
 
-    def step(self, field, side, none):
-        print('Making move level "medium"')
+    def step(self, field, side, *args):
+        # print('Making move level "medium"')
         step = self.medium_step(field, side)
         if step is None:
             step = self.easy_step(field)
+        self.counter(side)
         return step
 
     def medium_step(self, field, side):  # find the win combination without one element
@@ -168,20 +179,12 @@ class Medium(Easy):
 
 
 class Hard(Mirrors, Medium):
-    count = 0
-    counts = 0
-
-    def counter(self, side, count=1, counts=1):
-        self.count += count
-        self.counts += counts
-        print(f'side = {side}\ncount = {self.count}\ncounts = {self.counts}')
 
     def __str__(self):
         return 'hard'
 
-    def step(self, field, side, none):
-        self.count = 0
-        print('Making move level "hard"')
+    def step(self, field, side, *args):
+        # print('Making move level "hard"')
         steps = self.find_steps(field)
 
         if self.size % 2 != 0:  # if size is odd
@@ -203,11 +206,11 @@ class Hard(Mirrors, Medium):
             return x, y  # return the step
 
         try:  # try to find medium_level step
+            self.counter(side)
             x, y = self.medium_step(field, side)
         except TypeError:  # if medium_level step doesn't exist
             pass  # pass this part
         else:
-            self.counter(side)
             return x, y  # else return the step
 
         x, y = self.hard_step(field, side)
@@ -275,7 +278,7 @@ class Hard(Mirrors, Medium):
 
         # trying to get steps from database (table Steps)
         try:
-            print('Try to get steps from db')
+            print('Trying to get steps from db')
             db_steps = Steps.objects.get(
                 field=field_list_to_str(field, self.size),
             )
@@ -299,7 +302,7 @@ class Hard(Mirrors, Medium):
             # return mirror steps
             # # result_list = self.mirror_back(result_list, part)
 
-            # create a row in database (table Steps)
+            # create the row in database (table Steps)
             Steps.objects.create(
                 size=self.size,
                 field=field_list_to_str(field, self.size),
@@ -372,19 +375,6 @@ class Human:
         return 'user'
 
     def step(self, field, side, step):
-        # coordinates = input('Enter the coordinates: ')
-        # size = len(field[0])
-        # x, y = self.make_xy_from_step(coordinates, size)
         x = int(step[0])
         y = int(step[1])
-        return x, y
-
-    def make_xy_from_step(self, step, size):
-        step = step.replace(' ', '')
-        x = int(step[1]) - 1
-        y = int(step[0]) - 1
-        if x == size - 1:
-            x = 0
-        elif x == 0:
-            x = size - 1
         return x, y
