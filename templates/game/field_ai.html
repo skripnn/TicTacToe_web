@@ -10,19 +10,19 @@
             {% if column == "X" %}
                 <td>
                     <button>
-                        <img src="{% static "x.png" %}" width="100" alt="X"/>
+                        <img src="{% static "x.png" %}" alt="X"/>
                     </button>
                 </td>
             {% elif column == "O" %}
                 <td>
                     <button>
-                        <img src="{% static "o.png" %}" width="100" alt="O"/>
+                        <img src="{% static "o.png" %}" alt="O"/>
                     </button>
                 </td>
             {% else %}
                 <td>
                     <button>
-                        <img src="{% static "none.png" %}" width="100" alt=" "/>
+                        <img src="{% static "none.png" %}" alt=" "/>
                     </button>
                 </td>
             {% endif %}
@@ -31,12 +31,7 @@
     </table>
     <p>{{ state }}</p>
     {% if state == "game not finished" %}
-        <form method="post">{% csrf_token %}
-            <button type="submit" name="step" value=None>Next step</button>
-{#                <script type="text/javascript">#}
-{#                    {% include "game/next_step.js" %}#}
-{#                </script>#}
-        </form>
+        <script type="text/javascript">{% include "game/next_step.js" %}</script>
     {% else %}
         <a href="../">New game</a>
     {% endif %}

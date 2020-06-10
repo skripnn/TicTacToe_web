@@ -19,5 +19,7 @@ from .views import *
 
 urlpatterns = [
     path('', Game.as_view()),
+    path('clear_database/', DB.as_view()),
     path('<game_id>/', GameContinue.as_view())
+
 ]

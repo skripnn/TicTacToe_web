@@ -52,7 +52,16 @@ class GameContinue(View):
             'size': my_game.size,
             'state': my_game.state,
             'cells': cells,
+            'player': my_game.player
         }
+
+        if any((
+                my_game.state == 'Draw',
+                my_game.state == 'X',
+                my_game.state == 'O'
+        )):
+            my_game.delete()
+
         if user_step:
             return render(request, 'game/field_user.html', context=context)
         return render(request, 'game/field_ai.html', context=context)
@@ -61,7 +70,11 @@ class GameContinue(View):
         db_game = models.Game.objects.get(
             id=game_id
         )
-        step = request.POST['step']
+        print('TEST')
+        if 'step' in request.POST:
+            step = request.POST['step']
+        else:
+            step = None
         size = int(db_game.size)
         field = db_game.field
         player_x = db_game.player_x
@@ -83,3 +96,16 @@ class GameContinue(View):
         db_game.save()
 
         return self.get(request, game_id)
+
+
+class DB(View):
+    def get(self, request):
+        self.delete()
+        return redirect('../')
+
+    def delete(self):
+        games = models.Game.objects.all()
+        for i in games:
+            print(f'{i} is deleting')
+        games.delete()
+        print('Database is clear')

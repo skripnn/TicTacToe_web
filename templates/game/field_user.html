@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {#{% block title %}{% endblock %}#}
-
+{% block head %}
+<style>
+    {% load static %}
+    img.rollover {
+        background: url({% static "none.png" %});
+        transition-duration: 0.3s
+    }
+    img.rollover:hover {
+        {% if player == 'X' %}background: url({% static "x.png" %});
+        {% else %}background: url({% static "o.png" %});
+        {% endif %}
+    }
+</style>
+{% endblock %}
 {% block content %}
     <table border="1">
     {% for row in cells %}
@@ -10,13 +23,13 @@
             {% if column == "X" %}
                 <td>
                     <button>
-                        <img src="{% static "x.png" %}" width="100" alt="X"/>
+                        <img src="{% static "x.png" %}" alt="X"/>
                     </button>
                 </td>
             {% elif column == "O" %}
                 <td>
                     <button>
-                        <img src="{% static "o.png" %}" width="100" alt="O"/>
+                        <img src="{% static "o.png" %}" alt="O"/>
                     </button>
                 </td>
             {% else %}
@@ -24,14 +37,14 @@
                     <td>
                         <form method="post">{% csrf_token %}
                             <button type="submit" name="step" value="{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
-                                <img src="{% static "none.png" %}" width="100" alt=" "/>
+                                <img class=rollover src="{% static "none.png" %}" alt=" "/>
                             </button>
                         </form>
                     </td>
                 {% else %}
                     <td>
                         <button>
-                            <img src="{% static "none.png" %}" width="100" alt=" "/>
+                            <img src="{% static "none.png" %}" alt=" "/>
                         </button>
                     </td>
                 {% endif %}

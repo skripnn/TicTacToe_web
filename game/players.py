@@ -303,7 +303,6 @@ class Hard(Mirrors, Medium):
             Steps.objects.create(
                 size=self.size,
                 field=field_list_to_str(field, self.size),
-                score=maximum,
                 steps=' '.join(result_list)
             )
             print('Steps was created')
