@@ -114,18 +114,32 @@ class TicTacToe:
                 winner = ''.join(win_set)
                 self.winners.append(winner)
 
+    def check_draw(self):
+        for win in self.wins:
+            win_string = ''
+            for xy in win:
+                win_string += self.field[xy[0]][xy[1]]
+            win_letters = win_string.replace(' ', '')
+            win_set = set(win_letters)
+            if len(win_letters) == self.size and len(win_set) == 2:
+                continue
+            else:
+                return False
+        return True
+
+
     def check_state(self):
         self.check_win_rows()
         all_cells = [m for n in self.field for m in n]
         all_x = [x for x in all_cells if x == 'X']
         all_o = [o for o in all_cells if o == 'O']
-        if len(all_x) - len(all_o) > 1:
-            self.state = 'Impossible'
-        elif len(all_o) - len(all_x) > 1:
+        if any((len(all_x) - len(all_o) > 1,
+                len(all_o) - len(all_x) > 1)):
             self.state = 'Impossible'
         elif len(self.winners) == 0 and ' ' in all_cells:
             self.state = 'game not finished'
-        elif len(self.winners) == 0 and ' ' not in all_cells:
+        elif any((len(self.winners) == 0 and ' ' not in all_cells,
+                  self.check_draw())):
             self.state = 'Draw'
         else:
             if self.winners[0] == 'X':
@@ -133,11 +147,9 @@ class TicTacToe:
             elif self.winners[0] == 'O':
                 self.state = 'O wins'
 
-        if any((
-                self.state == 'Draw',
+        if any((self.state == 'Draw',
                 self.state == 'X',
-                self.state == 'O'
-        )):
+                self.state == 'O')):
             print(self.state)
             try:
                 all_counts = self.player_x.counts + self.player_o.counts
@@ -165,13 +177,18 @@ class Menu:
                 if players[-1] is None:
                     return self.bad_parameters()
             game = TicTacToe(*players, size, field, step)
+            if str(players[0]) == str(players[1]) == 'hard':
+                counts = game.player_x.counts + game.player_o.counts
+            else:
+                counts = 0
             return {
                 'size': game.size,
                 'state': game.state,
                 'field': game.field,
                 'player_x': game.player_x,
                 'player_o': game.player_o,
-                'player': game.player
+                'player': game.player,
+                'counts': counts
             }
 
         if command == 'exit':

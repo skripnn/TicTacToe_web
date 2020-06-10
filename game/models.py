@@ -14,3 +14,4 @@ class Game(models.Model):
     player_x = models.CharField(max_length=6)
     player_o = models.CharField(max_length=6)
     player = models.CharField(max_length=1)
+    counts = models.IntegerField()

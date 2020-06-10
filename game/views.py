@@ -3,6 +3,7 @@ from django.views import View
 from game import game
 from . import models
 from .functions import field_str_to_list, field_list_to_str
+# TODO разобраться, почему после POST-запроса через JS страница не обновляется сама - только через "reload"
 
 
 class Game(View):
@@ -24,7 +25,8 @@ class Game(View):
             state='game not finished',
             player_x=player_x,
             player_o=player_o,
-            player='X'
+            player='X',
+            counts=0
         )
         return redirect(f'{db_game.id}/')
 
@@ -54,6 +56,7 @@ class GameContinue(View):
             'cells': cells,
             'player': my_game.player
         }
+        print(f'all counts = {my_game.counts}')
 
         if user_step:
             return render(request, 'game/field_user.html', context=context)
@@ -78,6 +81,7 @@ class GameContinue(View):
         print(f'player X = {player_x}')
         print(f'player O = {player_o}')
         print(f'step = {step}')
+        print(f'counts = {db_game.counts}')
 
         step = game.Menu().input('start', [player_x, player_o], size, field, step)
         print(step)
@@ -86,6 +90,7 @@ class GameContinue(View):
         db_game.player = step['player']
         db_game.field = str_field
         db_game.state = step['state']
+        db_game.counts += step['counts']
         db_game.save()
 
         return self.get(request, game_id)
