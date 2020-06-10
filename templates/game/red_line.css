@@ -10,14 +10,14 @@
 
         .top.diagonal {
             transform: rotate(42.8deg);
-            top: 2%;
-            left: 2.5%;
+            top: 2.2%;
+            left: 2.7%;
         }
 
         .bottom.diagonal {
-            transform: rotate(-42.8deg);
-            top: 97%;
-            left: 2%;
+            transform: rotate(137deg);
+            top: 2.7%;
+            left: 97.8%;
         }
 
     .horizontal.line {

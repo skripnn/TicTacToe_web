@@ -3,19 +3,19 @@
 
 {% block content %}
     <form method="post">{% csrf_token %}
-        <fieldset>
+        <fieldset style="width: 14%; margin-left: 43%">
             <legend>Game parameters</legend>
-            <p><label for="size">Size</label><input type="number" min="3" max="5" value="3" name="size" ></p>
+            <p><label for="size">Size<input type="number" min="3" max="5" value="3" name="size" ></label></p>
 {#            <p><label for="field">Field</label><input type="text" name="field"></p>#}
-            <p><label for="player_x">Player X</label>
+            <p><label for="player_x">Player X
                 <select name="player_x">
                     {% include 'game/player_choose_menu.html' %}
-                </select>
+                </select></label>
             </p>
-            <p><label for="player_o">Player O</label>
+            <p><label for="player_o">Player O
                 <select name="player_o">
                     {% include 'game/player_choose_menu.html' %}
-                </select>
+                </select></label>
             </p>
             <button type="submit">Start</button>
         </fieldset>

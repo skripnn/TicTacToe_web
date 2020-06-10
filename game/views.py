@@ -13,12 +13,6 @@ class Game(View):
         size = int(request.POST['size'])
         player_x = request.POST['player_x']
         player_o = request.POST['player_o']
-        
-        print('START GAME')
-        print(f'size = {size}')
-        print(f'player X = {player_x}')
-        print(f'player O = {player_o}')
-        print('-----')
 
         field_str = ' ' * size ** 2
         db_game = models.Game.objects.create(
@@ -30,6 +24,13 @@ class Game(View):
             player='X',
             counts=0
         )
+
+        print(f'START GAME {db_game.id}')
+        print(f'size = {size}')
+        print(f'player X = {player_x}')
+        print(f'player O = {player_o}')
+        print('-----')
+
         return redirect(f'{db_game.id}/')
 
 
@@ -87,7 +88,6 @@ class GameContinue(View):
         print(f'player X = {player_x}')
         print(f'player O = {player_o}')
         print(f'step = {step}')
-        print(f'counts = {db_game.counts}')
         print('')
 
         context = game.TicTacToe(player_x, player_o, size, field_str, step).get_context()

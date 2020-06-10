@@ -109,7 +109,6 @@ class Mirrors:
 
 
 class Easy:
-    count = 0
     counts = 0
 
     def __init__(self, size=3):
@@ -119,9 +118,7 @@ class Easy:
     def __str__(self):
         return 'easy'
 
-
-    def counter(self, side, count=1, counts=1):
-        self.count += count
+    def counter(self, side, counts=1):
         self.counts += counts
         # print(f'side = {side}\ncount = {self.count}\ncounts = {self.counts}')
 
@@ -285,6 +282,7 @@ class Hard(Mirrors, Medium):
             result_list = db_steps.steps.split()
             print('Getting steps is okay')
             print(f'steps = {result_list}')
+            print('')
 
         # if the row doesn't exist
         except Steps.DoesNotExist:
@@ -309,11 +307,12 @@ class Hard(Mirrors, Medium):
                 steps=' '.join(result_list)
             )
             print('Steps was created')
+            print('')
 
         # choose a random step from list
         xy = random.choice(result_list)
         x, y = int(xy[0]), int(xy[1])
-        self.counter(side, 0, 0)
+        self.counter(side)
         return x, y  # return random maximum-score step
 
     def dict_steps(self, field):  # return the dict with all available steps {step: score}
@@ -327,7 +326,6 @@ class Hard(Mirrors, Medium):
 
     def minimax(self, field, x, y, side, level=1):
         k = 1 if level % 2 == 1 else -1  # k = result change factor (+ or -)
-        self.count += 1
         self.counts += 1
 
         # check win combinations

@@ -35,10 +35,14 @@
         {% endfor %}
         </table>
     </div>
-    <p>{{ state }}</p>
-    {% if not user_step and state == "game not finished" %}
-        <script type="text/javascript">{% include "game/next_step.js" %}</script>
+    {% if state == "game not finished" %}
+        {% if not user_step  %}
+            <script type="text/javascript">{% include "game/next_step.js" %}</script>
+        {% endif %}
     {% else %}
-        <a href="../">New game</a>
+        <div class="field" style="top: calc({{ size }}px * 100 + 100px)">
+            <h2 align="center">{{ state }}</h2>
+            <p align="center"><a href="../">New game</a></p>
+        </div>
     {% endif %}
 {% endblock %}

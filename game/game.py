@@ -82,15 +82,17 @@ class TicTacToe:
             print(self.state)
 
     def step(self):
-        self.count_steps += 1
+        # self.count_steps += 1
         if str(self.player_x) == str(self.player_o) == 'hard':
             self.count_steps = self.player_x.counts + self.player_o.counts
         self.change_player()
         # print(f'player {self.player} step:')
         if self.player == 'X':
             x, y = self.player_x.step(self.field, self.player, self.next_step)
+            self.count_steps += self.player_x.counts
         else:  # if self.player == 'O':
             x, y = self.player_o.step(self.field, self.player, self.next_step)
+            self.count_steps += self.player_o.counts
         self.field[x][y] = self.player
         self.add_to_cells()
         # self.print_cells()
@@ -167,7 +169,7 @@ class TicTacToe:
                 win_string += self.field[xy[0]][xy[1]]
             win_letters = win_string.replace(' ', '')
             win_set = set(win_letters)
-            if len(win_letters) == self.size and len(win_set) == 2:
+            if len(win_set) == 2:
                 continue
             else:
                 return False
@@ -181,11 +183,11 @@ class TicTacToe:
         if any((len(all_x) - len(all_o) > 1,
                 len(all_o) - len(all_x) > 1)):
             self.state = 'Impossible'
-        elif len(self.winners) == 0 and ' ' in all_cells:
-            self.state = 'game not finished'
         elif any((len(self.winners) == 0 and ' ' not in all_cells,
                   self.check_draw())):
             self.state = 'Draw'
+        elif len(self.winners) == 0 and ' ' in all_cells:
+            self.state = 'game not finished'
         else:
             if self.winners[0] == 'X':
                 self.state = 'X wins'
