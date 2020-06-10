@@ -2,24 +2,18 @@
 {#{% block title %}{% endblock %}#}
 {% block head %}
 <style>
-    {% load static %}
-    img.rollover {
-        background: url({% static "none.png" %});
-        transition-duration: 0.3s
-    }
-    img.rollover:hover {
-        {% if player == 'X' %}background: url({% static "x.png" %});
-        {% else %}background: url({% static "o.png" %});
-        {% endif %}
-    }
+    {% include 'game/field.css' %}
+    {% include 'game/red_line.css' %}
 </style>
 {% endblock %}
 {% block content %}
+    {% load static %}
+    <div class="field">
+    {% include 'game/red_line.html' %}
     <table border="1">
     {% for row in cells %}
         <tr>
         {% for column in row %}
-            {% load static %}
             {% if column == "X" %}
                 <td>
                     <button>
@@ -52,6 +46,7 @@
         {% endfor %}
     {% endfor %}
     </table>
+    </div>
     <p>{{ state }}</p>
     {% if state != 'game not finished' %}
         <a href="../">New game</a>

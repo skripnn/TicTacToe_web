@@ -7,6 +7,7 @@ class TicTacToe:
         self.size = size
         self.field = self.make_field()
         self.wins = players.make_wins(size)
+        self.red_line = ''
 
         self.cells = None
         self.winners = []
@@ -113,6 +114,31 @@ class TicTacToe:
             if len(win_letters) == self.size and len(win_set) == 1:
                 winner = ''.join(win_set)
                 self.winners.append(winner)
+                self.line_type(win)
+                break
+
+    def line_type(self, win):
+        x_list = []
+        y_list = []
+        for xy in win:
+            x_list.append(xy[0])
+            y_list.append(xy[1])
+        x_set = set(x_list)
+        y_set = set(y_list)
+        if len(x_set) == 1 and len(y_set) != 1:
+            self.red_line += 'horizontal _'
+            self.red_line += str(x_set.pop() + 1)
+            self.red_line += str(self.size)
+        elif len(y_set) == 1 and len(x_set) != 1:
+            self.red_line += 'vertical _'
+            self.red_line += str(y_set.pop() + 1)
+            self.red_line += str(self.size)
+        else:
+            self.red_line += 'diagonal '
+            if x_list[0] == y_list[0]:
+                self.red_line += 'top'
+            else:
+                self.red_line += 'bottom'
 
     def check_draw(self):
         for win in self.wins:
@@ -188,7 +214,8 @@ class Menu:
                 'player_x': game.player_x,
                 'player_o': game.player_o,
                 'player': game.player,
-                'counts': counts
+                'counts': counts,
+                'red_line': game.red_line
             }
 
         if command == 'exit':

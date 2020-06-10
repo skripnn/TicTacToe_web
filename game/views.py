@@ -54,7 +54,8 @@ class GameContinue(View):
             'size': my_game.size,
             'state': my_game.state,
             'cells': cells,
-            'player': my_game.player
+            'player': my_game.player,
+            'red_line': my_game.red_line
         }
         print(f'all counts = {my_game.counts}')
 
@@ -86,11 +87,13 @@ class GameContinue(View):
         step = game.Menu().input('start', [player_x, player_o], size, field, step)
         print(step)
 
+        red_line = step['red_line']
         str_field = field_list_to_str(step['field'], step['size'])
         db_game.player = step['player']
         db_game.field = str_field
         db_game.state = step['state']
         db_game.counts += step['counts']
+        db_game.red_line = red_line
         db_game.save()
 
         return self.get(request, game_id)

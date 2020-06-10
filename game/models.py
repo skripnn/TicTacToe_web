@@ -15,3 +15,4 @@ class Game(models.Model):
     player_o = models.CharField(max_length=6)
     player = models.CharField(max_length=1)
     counts = models.IntegerField()
+    red_line = models.CharField(max_length=48, default='')

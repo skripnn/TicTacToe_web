@@ -1,0 +1,129 @@
+.line {
+    position: absolute;
+    transform-origin: 0 0 0;
+    z-index: 1000;
+    height: 1%;
+}
+    .diagonal {
+        width: 130%;
+    }
+
+        .top.diagonal {
+            transform: rotate(42.8deg);
+            top: 2%;
+            left: 2.5%;
+        }
+
+        .bottom.diagonal {
+            transform: rotate(-42.8deg);
+            top: 97%;
+            left: 2%;
+        }
+
+    .horizontal.line {
+        transform: rotate(0deg);
+        width: 96%;
+        left: 2%;
+    }
+
+        ._13.horizontal {
+            top: 16%;
+        }
+
+        ._23.horizontal {
+            top: 50%;
+        }
+
+        ._33.horizontal {
+            top: 84%;
+        }
+
+        ._14.horizontal {
+             top: 12%;
+        }
+
+        ._24.horizontal {
+             top: 37%;
+        }
+
+        ._34.horizontal {
+             top: 62%;
+        }
+
+        ._44.horizontal {
+             top: 87%;
+        }
+
+        ._15.horizontal {
+             top: 9%;
+        }
+
+        ._25.horizontal {
+             top: 29%;
+        }
+
+        ._35.horizontal {
+             top: 49%;
+        }
+
+        ._45.horizontal {
+             top: 69%;
+        }
+
+        ._55.horizontal {
+             top: 89%;
+        }
+
+    .vertical.line {
+        transform: rotate(90deg);
+        width: 89%;
+        top: 2%;
+    }
+
+        ._13.vertical {
+            left: 17%;
+        }
+        
+        ._23.vertical {
+            left: 51%;
+        }
+
+        ._33.vertical {
+            left: 83%;
+        }
+        
+        ._14.vertical {
+             left: 14%;
+        }
+
+        ._24.vertical {
+             left: 39%;
+        }
+
+        ._34.vertical {
+             left: 63%;
+        }
+
+        ._44.vertical {
+             left: 88%;
+        }
+
+        ._15.vertical {
+             left: 11%;
+        }
+
+        ._25.vertical {
+             left: 31%;
+        }
+        
+        ._35.vertical {
+             left: 51%;
+        }
+
+        ._45.vertical {
+             left: 71%;
+        }
+
+        ._55.vertical {
+             left: 91%;
+        }
