@@ -368,6 +368,7 @@ class Hard(Mirrors, Medium):
 
 
 class Human:
+    counts = 0
 
     def __str__(self):
         return 'user'
